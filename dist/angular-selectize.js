@@ -94,6 +94,17 @@ angular.module('selectize', []).value('selectizeConfig', {}).directive("selectiz
         scope.$watch('ngDisabled', toggle);
       };
 
+      // watch for changes to attributes that are copied down to the 
+      // input and keep them in sync
+      ['placeholder', 'title'].forEach(function(prop){
+        scope.$watch(function()  { return element && element.attr(prop); }, function(val) {
+          if (element) {
+            element.siblings('.selectize-control').find('input').attr(prop, val);
+          }
+        });
+      });
+      
+
       element.selectize(settings);
 
       element.on('$destroy', function() {
