@@ -94,16 +94,21 @@ angular.module('selectize', []).value('selectizeConfig', {}).directive("selectiz
         scope.$watch('ngDisabled', toggle);
       };
 
-      // watch for changes to attributes that are copied down to the 
-      // input and keep them in sync
+      // watch for changes to attributes that are copied down to the
+      // input and keep them in sync.  We have set the attr in the watch expression
+      // rather than in the listener because after an update the selectize library
+      // may have reverted the placeholder to the un-interpolated value even though
+      // the value of element.attr(prop) has not changed
+      var input;
       ['placeholder', 'title'].forEach(function(prop){
-        scope.$watch(function()  { return element && element.attr(prop); }, function(val) {
+        scope.$watch(function()  {
           if (element) {
-            element.siblings('.selectize-control').find('input').attr(prop, val);
+            var val = element.attr(prop);
+            input = input || element.siblings('.selectize-control').find('input');
+            input.attr(prop, val);
           }
         });
       });
-      
 
       element.selectize(settings);
 
